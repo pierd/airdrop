@@ -16,6 +16,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSSharingServiceDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         if let service = NSSharingService.init(named: NSSharingService.Name.sendViaAirDrop) {
             service.delegate = self
+
+            // close stderr to disable some nasty log
+            // warning: illegal subclass SHKRemoteView instantiating; client should use only NSRemoteView
+            close(2)
+
             service.perform(withItems: self.urls)
         } else {
             exit(-1)
@@ -31,7 +36,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSSharingServiceDelegate {
     }
 }
 
-close(2)    // close stderr to disable some nasty log
 let delegate = AppDelegate(urls: CommandLine.arguments[1...])
 NSApplication.shared.delegate = delegate
 NSApplication.shared.run()
